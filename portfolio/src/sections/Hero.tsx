@@ -5,7 +5,7 @@ import { SiHackerrank } from "react-icons/si";
 import profile from "../assets/profile.png";
 
 export default function Hero() {
-  const roles = ["Data Scientist", "AI Engineer", "Full Stack Developer"];
+  const roles = ["LLM Evaluator & AI Trainer","Prompt Engineer ", "Data Scientist", "AI Engineer", "Full Stack Developer & Data Analyst"];
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
