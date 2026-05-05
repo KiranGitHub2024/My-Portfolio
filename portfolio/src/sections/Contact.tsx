@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FaPhoneAlt, FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa";
+import { trackEvent } from "../analytics";
 import { SiHackerrank } from "react-icons/si";
 
 export default function Contact() {
@@ -41,42 +42,32 @@ export default function Contact() {
       {/* SOCIAL ICONS */}
       <div className="flex justify-center gap-8 mt-10">
 
-        {/* GitHub */}
         <a
           href="https://github.com/KiranGitHub2024"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackEvent("Social", "GitHub Click")}
         >
-          <FaGithub
-            size={28}
-            className="hover:text-primary transition cursor-pointer"
-          />
+          <FaGithub size={28} className="hover:text-primary transition" />
         </a>
 
-        {/* LinkedIn */}
         <a
           href="https://www.linkedin.com/in/ravi-kiran-kothapalli-462b34219/"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackEvent("Social", "LinkedIn Click")}
         >
-          <FaLinkedin
-            size={28}
-            className="hover:text-primary transition cursor-pointer"
-          />
+          <FaLinkedin size={28} className="hover:text-primary transition" />
         </a>
 
-        {/* HackerRank */}
         <a
           href="https://www.hackerrank.com/profile/rk_kothapalli95"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackEvent("Social", "HackerRank Click")}
         >
-          <SiHackerrank
-            size={28}
-            className="hover:text-primary transition cursor-pointer"
-          />
+          <SiHackerrank size={28} className="hover:text-primary transition" />
         </a>
-
       </div>
     </motion.section>
   );

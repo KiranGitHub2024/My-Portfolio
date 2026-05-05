@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { FaGithub, FaLinkedin, FaDownload, FaFilePdf } from "react-icons/fa";
 import { SiHackerrank } from "react-icons/si";
+import { trackEvent } from "../analytics";
 import profile from "../assets/profile.png";
 
 export default function Hero() {
@@ -35,7 +36,7 @@ export default function Hero() {
 
   // 🔥 Track Download Click
   const handleDownload = () => {
-    console.log("Resume Downloaded");
+    trackEvent("Resume", "Download Click");
 
     const link = document.createElement("a");
     link.href = "/resume.pdf";
@@ -104,14 +105,34 @@ export default function Hero() {
 
             {/* Social Icons */}
             <div className="flex gap-6 mt-8">
-              <a href="https://github.com/KiranGitHub2024" target="_blank">
-                <FaGithub size={26} className="hover:text-primary" />
+                {/* GitHub */}
+              <a
+                href="https://github.com/KiranGitHub2024"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("Social", "GitHub Click")}
+              >
+                <FaGithub size={26} className="hover:text-primary transition" />
               </a>
-              <a href="https://www.linkedin.com/in/ravi-kiran-kothapalli-462b34219/" target="_blank">
-                <FaLinkedin size={26} className="hover:text-primary" />
+
+              {/* LinkedIn */}
+              <a
+                href="https://www.linkedin.com/in/ravi-kiran-kothapalli-462b34219/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("Social", "LinkedIn Click")}
+              >
+                <FaLinkedin size={26} className="hover:text-primary transition" />
               </a>
-              <a href="https://www.hackerrank.com/profile/rk_kothapalli95" target="_blank">
-                <SiHackerrank size={26} className="hover:text-primary" />
+
+              {/* HackerRank */}
+              <a
+                href="https://www.hackerrank.com/profile/rk_kothapalli95"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("Social", "HackerRank Click")}
+              >
+                <SiHackerrank size={26} className="hover:text-primary transition" />
               </a>
             </div>
           </div>
