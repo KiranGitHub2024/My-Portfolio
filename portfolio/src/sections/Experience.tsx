@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const experiences = [
   {
-    company: "Soul AI",
+    company: "Deccan AI Experts",
     duration: "November 2025 - Present",
     role: "AI Engineer / LLM Evaluator",
     desc: "Working on LLM evaluation, prompt engineering, and improving AI response quality across multiple projects.",
