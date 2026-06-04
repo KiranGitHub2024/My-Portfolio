@@ -6,11 +6,17 @@ import { trackEvent } from "../analytics";
 import profile from "../assets/profile.png";
 
 export default function Hero() {
-  const roles = ["LLM Evaluator & AI Trainer","Prompt Engineer ", "Data Scientist", "AI Engineer", "Full Stack Developer & Data Analyst"];
+  const roles = [
+    "LLM Evaluator & AI Trainer",
+    "Prompt Engineer ",
+    "Data Scientist",
+    "AI Engineer",
+    "Full Stack Developer & Data Analyst",
+  ];
+
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
-
   const [showResume, setShowResume] = useState(false);
 
   useEffect(() => {
@@ -32,9 +38,8 @@ export default function Hero() {
 
       return () => clearTimeout(timeout);
     }
-  }, [charIndex, index]);
+  }, [charIndex, index, roles]);
 
-  // 🔥 Track Download Click
   const handleDownload = () => {
     trackEvent("Resume", "Download Click");
 
@@ -51,10 +56,9 @@ export default function Hero() {
         className="pt-24 min-h-screen flex items-center justify-center px-6 relative overflow-hidden"
       >
         {/* Glow */}
-        <div className="absolute w-[700px] h-[700px] bg-primary opacity-10 blur-3xl rounded-full top-10 left-1/2 -translate-x-1/2"></div>
+        <div className="pointer-events-none absolute w-[700px] h-[700px] bg-primary opacity-10 blur-3xl rounded-full top-10 left-1/2 -translate-x-1/2 z-0"></div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-center max-w-7xl w-full">
-
+        <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center max-w-7xl w-full">
           {/* LEFT */}
           <div>
             <motion.h1
@@ -73,16 +77,17 @@ export default function Hero() {
             </p>
 
             <p className="mt-6 text-gray-400 max-w-lg">
-              Turning data into intelligent systems and building AI-powered solutions.
+              Turning data into intelligent systems and building AI-powered
+              solutions.
             </p>
 
-            {/* 🔥 BUTTONS */}
-            <div className="flex flex-wrap gap-4 mt-8">
-
+            {/* Buttons */}
+            <div className="relative z-20 flex flex-wrap gap-4 mt-8">
               {/* View Resume */}
               <button
+                type="button"
                 onClick={() => setShowResume(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-primary text-black rounded-full hover:scale-105 transition"
+                className="flex items-center gap-2 px-6 py-3 bg-primary text-black rounded-full hover:scale-105 transition touch-manipulation"
               >
                 <FaFilePdf />
                 View Resume
@@ -90,8 +95,9 @@ export default function Hero() {
 
               {/* Download Resume */}
               <button
+                type="button"
                 onClick={handleDownload}
-                className="flex items-center gap-2 px-6 py-3 border border-gray-600 rounded-full hover:border-primary hover:text-primary transition"
+                className="flex items-center gap-2 px-6 py-3 border border-gray-600 rounded-full hover:border-primary hover:text-primary transition touch-manipulation"
               >
                 <motion.span
                   animate={{ y: [0, -3, 0] }}
@@ -104,13 +110,14 @@ export default function Hero() {
             </div>
 
             {/* Social Icons */}
-            <div className="flex gap-6 mt-8">
-                {/* GitHub */}
+            <div className="relative z-20 flex gap-6 mt-8">
+              {/* GitHub */}
               <a
                 href="https://github.com/KiranGitHub2024"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent("Social", "GitHub Click")}
+                className="touch-manipulation"
               >
                 <FaGithub size={26} className="hover:text-primary transition" />
               </a>
@@ -121,6 +128,7 @@ export default function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent("Social", "LinkedIn Click")}
+                className="touch-manipulation"
               >
                 <FaLinkedin size={26} className="hover:text-primary transition" />
               </a>
@@ -131,8 +139,12 @@ export default function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent("Social", "HackerRank Click")}
+                className="touch-manipulation"
               >
-                <SiHackerrank size={26} className="hover:text-primary transition" />
+                <SiHackerrank
+                  size={26}
+                  className="hover:text-primary transition"
+                />
               </a>
             </div>
           </div>
@@ -149,11 +161,10 @@ export default function Hero() {
               className="w-[320px] md:w-[420px] rounded-full"
             />
           </motion.div>
-
         </div>
       </section>
 
-      {/* 🔥 RESUME MODAL */}
+      {/* Resume Modal */}
       <AnimatePresence>
         {showResume && (
           <motion.div
@@ -164,19 +175,21 @@ export default function Hero() {
             onClick={() => setShowResume(false)}
           >
             <motion.div
-              className="bg-gray-900 w-[90%] h-[90%] rounded-xl overflow-hidden"
+              className="relative bg-gray-900 w-[90%] h-[90%] rounded-xl overflow-hidden"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               onClick={(e) => e.stopPropagation()}
             >
               <iframe
                 src="/resume.pdf"
+                title="Resume"
                 className="w-full h-full"
               ></iframe>
 
               <button
+                type="button"
                 onClick={() => setShowResume(false)}
-                className="absolute top-4 right-4 px-4 py-2 bg-primary text-black rounded-full"
+                className="absolute top-4 right-4 px-4 py-2 bg-primary text-black rounded-full touch-manipulation"
               >
                 Close
               </button>
