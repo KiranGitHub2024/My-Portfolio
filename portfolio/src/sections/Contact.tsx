@@ -192,7 +192,7 @@ export default function Contact() {
                                   transition duration-300">
                       {social.label}
                     </p>
-                    <p className="text-gray-500 text-xs mt-0.5 truncate max-w-[100px]">
+                    <p className="text-gray-500 text-xs mt-0.5 truncate max-w-[80px] sm:max-w-[100px] md:max-w-[150px]">
                       {social.sublabel}
                     </p>
                   </div>
