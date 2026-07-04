@@ -23,21 +23,21 @@ const contactDetails = [
 
 const socialLinks = [
   {
-    icon: <FaGithub size={24} />,
+    icon: <FaGithub size={22} />,
     label: "GitHub",
     sublabel: "KiranGitHub2024",
     href: "https://github.com/KiranGitHub2024",
     event: "GitHub Click",
   },
   {
-    icon: <FaLinkedin size={24} />,
+    icon: <FaLinkedin size={22} />,
     label: "LinkedIn",
     sublabel: "ravi-kiran-kothapalli",
     href: "https://www.linkedin.com/in/ravi-kiran-kothapalli-462b34219/",
     event: "LinkedIn Click",
   },
   {
-    icon: <SiHackerrank size={24} />,
+    icon: <SiHackerrank size={22} />,
     label: "HackerRank",
     sublabel: "rk_kothapalli95",
     href: "https://www.hackerrank.com/profile/rk_kothapalli95",
@@ -53,13 +53,11 @@ export default function Contact() {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
-      className="px-10 py-24"
+      className="px-4 sm:px-10 py-24"
     >
       {/* Section heading */}
-      <h2 className="text-4xl font-bold text-primary text-center">
-        Contact
-      </h2>
-      <div className="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
+      <h2 className="text-4xl font-bold text-primary text-center">Contact</h2>
+      <div className="w-20 h-1 bg-primary mx-auto mt-4 rounded-full" />
       <p className="text-center text-gray-500 text-sm mt-4 tracking-wide">
         Let's build something great together
       </p>
@@ -85,7 +83,7 @@ export default function Contact() {
           `}</style>
 
           {/* Main card */}
-          <div className="bg-[#0f0f13] rounded-xl p-8 border-l-4 border-primary">
+          <div className="bg-[#0f0f13] rounded-xl p-5 sm:p-8 border-l-4 border-primary">
 
             {/* Availability badge + tagline */}
             <div className="flex flex-col items-center text-center gap-4 mb-8">
@@ -95,8 +93,7 @@ export default function Contact() {
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                 Open to Opportunities
               </span>
-
-              <h3 className="text-2xl font-bold text-white">
+              <h3 className="text-xl sm:text-2xl font-bold text-white">
                 Have a project in mind or an opportunity to discuss?
               </h3>
               <p className="text-gray-400 max-w-lg text-sm leading-relaxed">
@@ -107,7 +104,7 @@ export default function Contact() {
             </div>
 
             {/* Contact detail cards */}
-            <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               {contactDetails.map((item, i) => (
                 <motion.a
                   key={i}
@@ -118,22 +115,24 @@ export default function Contact() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   viewport={{ once: true }}
-                  className="flex items-center gap-4 p-4 rounded-xl
+                  className="flex items-center gap-4 p-4 rounded-xl min-w-0
                              bg-white/5 border border-white/10
                              hover:border-primary hover:bg-primary/5
                              transition duration-300 group"
                 >
+                  {/* Icon */}
                   <div className="p-3 rounded-full bg-primary/10 border border-primary/20
                                   text-primary group-hover:bg-primary group-hover:text-black
-                                  transition duration-300">
+                                  transition duration-300 shrink-0">
                     {item.icon}
                   </div>
-                  <div className="text-left">
+                  {/* Text — min-w-0 + overflow-hidden prevents overflow */}
+                  <div className="text-left min-w-0 flex-1">
                     <p className="text-xs text-gray-500 tracking-wide uppercase">
                       {item.label}
                     </p>
                     <p className="text-white text-sm font-medium group-hover:text-primary
-                                  transition duration-300">
+                                  transition duration-300 truncate">
                       {item.value}
                     </p>
                   </div>
@@ -150,7 +149,7 @@ export default function Contact() {
                 whileTap={{ scale: 0.97 }}
                 className="inline-flex items-center gap-3 px-8 py-3 rounded-full
                            bg-primary text-black font-bold text-sm
-                           hover:brightness-110 transition duration-300 shadow-lg"
+                           hover:brightness-110 transition duration-300"
                 style={{ boxShadow: "0 0 24px rgba(201,162,39,0.25)" }}
               >
                 <FaPaperPlane size={14} />
@@ -165,7 +164,12 @@ export default function Contact() {
             <p className="text-center text-xs text-gray-500 tracking-widest uppercase mb-5">
               Find me on
             </p>
-            <div className="grid grid-cols-3 gap-4">
+
+            {/* 
+              Mobile: single column stacked cards (full width, horizontal layout)
+              Desktop: 3-column grid 
+            */}
+            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-3">
               {socialLinks.map((social, i) => (
                 <motion.a
                   key={i}
@@ -177,27 +181,33 @@ export default function Contact() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   viewport={{ once: true }}
-                  className="flex flex-col items-center gap-3 p-4 rounded-xl
+                  className="flex sm:flex-col items-center sm:items-center
+                             gap-4 sm:gap-3 p-4 rounded-xl
                              bg-white/5 border border-white/10
                              hover:border-primary hover:bg-primary/5
                              transition duration-300 group"
                 >
+                  {/* Icon */}
                   <div className="p-3 rounded-full bg-primary/10 border border-primary/20
                                   text-primary group-hover:bg-primary group-hover:text-black
-                                  transition duration-300">
+                                  transition duration-300 shrink-0">
                     {social.icon}
                   </div>
-                  <div className="text-center">
+
+                  {/* Labels — horizontal on mobile, centered on desktop */}
+                  <div className="flex-1 sm:flex-none text-left sm:text-center min-w-0">
                     <p className="text-white text-sm font-semibold group-hover:text-primary
                                   transition duration-300">
                       {social.label}
                     </p>
-                    <p className="text-gray-500 text-xs mt-0.5 truncate max-w-[80px] sm:max-w-[100px] md:max-w-[150px]">
+                    <p className="text-gray-500 text-xs mt-0.5 truncate max-w-[180px] sm:max-w-[100px]">
                       {social.sublabel}
                     </p>
                   </div>
+
+                  {/* Visit arrow — right side on mobile, bottom on desktop */}
                   <span className="text-xs text-gray-600 group-hover:text-primary
-                                   transition duration-300">
+                                   transition duration-300 shrink-0 ml-auto sm:ml-0">
                     Visit →
                   </span>
                 </motion.a>
