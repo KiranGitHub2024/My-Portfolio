@@ -113,7 +113,6 @@ const nonTechnicalCategories: SkillCategory[] = [
   },
 ];
 
-
 function FlipCard({ category, index }: { category: SkillCategory; index: number }) {
   const [flipped, setFlipped] = useState(false);
   const Icon = category.icon;
@@ -133,27 +132,34 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
           transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
         }}
       >
-        {/* FRONT — click here to flip */}
+
+        {/* ===== FRONT ===== */}
         <div
-          className="absolute inset-0 rounded-xl flex flex-col items-center justify-center gap-5 border border-primary/30 cursor-pointer"
+          className="absolute inset-0 rounded-xl flex flex-col items-center
+                     justify-center gap-5 border border-primary/30 cursor-pointer"
           style={{
             backfaceVisibility: "hidden",
-            background: "linear-gradient(135deg, #1a1608 0%, #0f0f13 60%, #1a1205 100%)",
+            background:
+              "linear-gradient(135deg, #1a1608 0%, #0f0f13 60%, #1a1205 100%)",
           }}
           onClick={() => setFlipped(true)}
         >
+          {/* Shimmer overlay */}
           <div
             className="absolute inset-0 rounded-xl pointer-events-none"
             style={{
-              background: "linear-gradient(120deg, transparent 30%, rgba(201,162,39,0.15) 50%, transparent 70%)",
+              background:
+                "linear-gradient(120deg, transparent 30%, rgba(201,162,39,0.15) 50%, transparent 70%)",
               backgroundSize: "200% 200%",
               animation: `shimmer ${3 + index * 0.4}s linear infinite`,
             }}
           />
+          {/* Dot pattern */}
           <div
             className="absolute inset-0 rounded-xl opacity-10 pointer-events-none"
             style={{
-              backgroundImage: "radial-gradient(circle, #c9a227 1px, transparent 1px)",
+              backgroundImage:
+                "radial-gradient(circle, #c9a227 1px, transparent 1px)",
               backgroundSize: "20px 20px",
             }}
           />
@@ -170,45 +176,63 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
           </div>
         </div>
 
-        {/* BACK */}
+        {/* ===== BACK ===== */}
         <div
-          className="absolute inset-0 rounded-xl p-5 flex flex-col gap-3 bg-white/5 backdrop-blur-lg border border-primary"
+          className="absolute inset-0 rounded-xl flex flex-col
+                     bg-white/5 backdrop-blur-lg border border-primary overflow-hidden"
           style={{
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)",
           }}
         >
-          {/* Header — click here to flip back */}
+          {/* Header — click to flip back */}
           <div
-            className="flex items-center gap-2 border-b border-white/10 pb-2 cursor-pointer shrink-0"
+            className="flex items-center gap-2 px-4 pt-4 pb-2
+                       border-b border-white/10 cursor-pointer shrink-0"
             onClick={() => setFlipped(false)}
           >
-            <span className="text-primary"><Icon size={16} /></span>
-            <h3 className="text-xs font-bold text-white">{category.title}</h3>
-            <span className="ml-auto text-xs text-primary/50 tracking-widest uppercase">
-              ← flip back
+            <span className="text-primary"><Icon size={15} /></span>
+            <h3 className="text-xs font-bold text-white truncate flex-1">
+              {category.title}
+            </h3>
+            <span className="text-xs text-primary/50 tracking-wide shrink-0">
+              ← back
             </span>
           </div>
 
-          {/* Scrollable skill tags — stopPropagation prevents flip on scroll interaction */}
+          {/* Scrollable skills area
+              — isolated from flip via stopPropagation on all pointer events
+              — pr-2 gives scrollbar clear space away from the 3D card edge
+              — overflow-x-hidden prevents tiny horizontal overflow pushing scrollbar out
+          */}
           <div
-            className="flex flex-wrap gap-1.5 overflow-y-auto"
+            className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-3 pr-2"
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "#c9a227 transparent",
+            }}
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
           >
-            {category.skills.map((skill, j) => (
-              <span
-                key={j}
-                className="px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary border border-primary/20"
-              >
-                {skill}
-              </span>
-            ))}
+            <div className="flex flex-wrap gap-1.5">
+              {category.skills.map((skill, j) => (
+                <span
+                  key={j}
+                  className="px-2 py-0.5 text-xs rounded-full
+                             bg-primary/10 text-primary border border-primary/20
+                             select-none"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
           </div>
 
-          {/* Footer — click here to flip back */}
+          {/* Footer — click to flip back */}
           <div
-            className="mt-auto cursor-pointer"
+            className="px-4 py-2 border-t border-white/10 cursor-pointer shrink-0"
             onClick={() => setFlipped(false)}
           >
             <span className="text-xs text-primary/40 tracking-widest uppercase">
@@ -216,13 +240,16 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
             </span>
           </div>
         </div>
+
       </div>
     </motion.div>
   );
 }
 
 export default function Skills() {
-  const [activeTab, setActiveTab] = useState<"technical" | "nontechnical">("technical");
+  const [activeTab, setActiveTab] = useState<"technical" | "nontechnical">(
+    "technical"
+  );
 
   const categories =
     activeTab === "technical" ? technicalCategories : nonTechnicalCategories;
@@ -277,7 +304,7 @@ export default function Skills() {
         </button>
       </div>
 
-      {/* Subtitle for active tab */}
+      {/* Tab subtitle */}
       <p className="text-center text-gray-600 text-xs mt-3 tracking-widest uppercase">
         {activeTab === "technical"
           ? "6 categories · AI, ML, Dev, Data & More"
