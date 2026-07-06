@@ -113,6 +113,7 @@ const nonTechnicalCategories: SkillCategory[] = [
   },
 ];
 
+
 function FlipCard({ category, index }: { category: SkillCategory; index: number }) {
   const [flipped, setFlipped] = useState(false);
   const Icon = category.icon;
@@ -122,9 +123,8 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.08 }}
-      className="h-64 cursor-pointer"
+      className="h-64"
       style={{ perspective: "1000px" }}
-      onClick={() => setFlipped(!flipped)}
     >
       <div
         className="relative w-full h-full transition-transform duration-700"
@@ -133,13 +133,14 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
           transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
         }}
       >
-        {/* FRONT */}
+        {/* FRONT — click here to flip */}
         <div
-          className="absolute inset-0 rounded-xl flex flex-col items-center justify-center gap-5 border border-primary/30"
+          className="absolute inset-0 rounded-xl flex flex-col items-center justify-center gap-5 border border-primary/30 cursor-pointer"
           style={{
             backfaceVisibility: "hidden",
             background: "linear-gradient(135deg, #1a1608 0%, #0f0f13 60%, #1a1205 100%)",
           }}
+          onClick={() => setFlipped(true)}
         >
           <div
             className="absolute inset-0 rounded-xl pointer-events-none"
@@ -177,11 +178,24 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
             transform: "rotateY(180deg)",
           }}
         >
-          <div className="flex items-center gap-2 border-b border-white/10 pb-2">
+          {/* Header — click here to flip back */}
+          <div
+            className="flex items-center gap-2 border-b border-white/10 pb-2 cursor-pointer shrink-0"
+            onClick={() => setFlipped(false)}
+          >
             <span className="text-primary"><Icon size={16} /></span>
             <h3 className="text-xs font-bold text-white">{category.title}</h3>
+            <span className="ml-auto text-xs text-primary/50 tracking-widest uppercase">
+              ← flip back
+            </span>
           </div>
-          <div className="flex flex-wrap gap-1.5 overflow-y-auto">
+
+          {/* Scrollable skill tags — stopPropagation prevents flip on scroll interaction */}
+          <div
+            className="flex flex-wrap gap-1.5 overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
             {category.skills.map((skill, j) => (
               <span
                 key={j}
@@ -191,9 +205,16 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
               </span>
             ))}
           </div>
-          <span className="text-xs text-primary/40 tracking-widest uppercase mt-auto">
-            Tap to flip back
-          </span>
+
+          {/* Footer — click here to flip back */}
+          <div
+            className="mt-auto cursor-pointer"
+            onClick={() => setFlipped(false)}
+          >
+            <span className="text-xs text-primary/40 tracking-widest uppercase">
+              Tap to flip back
+            </span>
+          </div>
         </div>
       </div>
     </motion.div>
