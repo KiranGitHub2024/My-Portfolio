@@ -5,7 +5,7 @@ import {
   FaChalkboardTeacher, FaClipboardCheck, FaUsers, FaLightbulb,
 } from "react-icons/fa";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────
 type SkillCategory = {
   icon: React.ElementType;
   title: string;
@@ -15,18 +15,15 @@ type SkillCategory = {
 type SkillTag = {
   skill: string;
   category: string;
-  // position as % of container width/height
   x: number;
   y: number;
-  // float animation params
   floatDuration: number;
   floatDelay: number;
   floatAmount: number;
-  // visual weight
   size: "sm" | "md" | "lg";
 };
 
-// ─── Technical Categories (unchanged flip cards) ───────────────────────────
+// ─── Technical Categories ─────────────────────────────────────────────────
 const technicalCategories: SkillCategory[] = [
   {
     icon: FaRobot,
@@ -129,18 +126,14 @@ const nonTechnicalCategories: SkillCategory[] = [
   },
 ];
 
-// ─── Deterministic tag layout ─────────────────────────────────────────────
-// We divide the canvas into 4 quadrants, one per category.
-// Within each quadrant we lay tags out in a staggered grid
-// with slight organic offsets — guarantees zero overlap.
+// ─── Tag layout (desktop cloud) ───────────────────────────────────────────
 const QUADRANTS = [
-  { xStart: 2,  yStart: 5,  xEnd: 48, yEnd: 48 }, // top-left
-  { xStart: 52, yStart: 5,  xEnd: 98, yEnd: 48 }, // top-right
-  { xStart: 2,  yStart: 55, xEnd: 48, yEnd: 95 }, // bottom-left
-  { xStart: 52, yStart: 55, xEnd: 98, yEnd: 95 }, // bottom-right
+  { xStart: 2,  yStart: 5,  xEnd: 48, yEnd: 48 },
+  { xStart: 52, yStart: 5,  xEnd: 98, yEnd: 48 },
+  { xStart: 2,  yStart: 55, xEnd: 48, yEnd: 95 },
+  { xStart: 52, yStart: 55, xEnd: 98, yEnd: 95 },
 ];
 
-// Organic offsets per slot — hand-tuned for natural look
 const OFFSETS = [
   [0,0],[3,-2],[-2,3],[4,1],[-3,-1],[2,4],
   [-1,2],[3,-3],[0,2],[-2,-2],[4,3],[1,-1],
@@ -148,7 +141,7 @@ const OFFSETS = [
 
 function buildTags(categories: SkillCategory[]): SkillTag[] {
   const tags: SkillTag[] = [];
-  const sizes: Array<"sm" | "md" | "lg"> = ["md","lg","sm","md","sm","lg","md","sm","lg","md","sm","md"];
+  const sizes: Array<"sm"|"md"|"lg"> = ["md","lg","sm","md","sm","lg","md","sm","lg","md","sm","md"];
 
   categories.forEach((cat, catIdx) => {
     const q = QUADRANTS[catIdx];
@@ -173,7 +166,6 @@ function buildTags(categories: SkillCategory[]): SkillTag[] {
       });
     });
   });
-
   return tags;
 }
 
@@ -185,7 +177,7 @@ const sizeClasses = {
   lg: "text-sm px-3 py-1 font-semibold",
 };
 
-// ─── Flip Card (Technical) ─────────────────────────────────────────────────
+// ─── Flip Card (Technical) ────────────────────────────────────────────────
 function FlipCard({ category, index }: { category: SkillCategory; index: number }) {
   const [flipped, setFlipped] = useState(false);
   const Icon = category.icon;
@@ -218,8 +210,7 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
           <div
             className="absolute inset-0 rounded-xl pointer-events-none"
             style={{
-              background:
-                "linear-gradient(120deg,transparent 30%,rgba(201,162,39,0.15) 50%,transparent 70%)",
+              background: "linear-gradient(120deg,transparent 30%,rgba(201,162,39,0.15) 50%,transparent 70%)",
               backgroundSize: "200% 200%",
               animation: `shimmer ${3 + index * 0.4}s linear infinite`,
             }}
@@ -256,9 +247,7 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
             onClick={() => setFlipped(false)}
           >
             <span className="text-primary"><Icon size={15} /></span>
-            <h3 className="text-xs font-bold text-white truncate flex-1">
-              {category.title}
-            </h3>
+            <h3 className="text-xs font-bold text-white truncate flex-1">{category.title}</h3>
             <span className="text-xs text-primary/50 shrink-0">← back</span>
           </div>
           <div
@@ -295,36 +284,139 @@ function FlipCard({ category, index }: { category: SkillCategory; index: number 
   );
 }
 
-// ─── Tag Cloud ────────────────────────────────────────────────────────────
-function SkillCloud() {
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
-  const [hoveredSkill, setHoveredSkill]       = useState<string | null>(null);
+// ─── Mobile Non-Technical View ────────────────────────────────────────────
+function MobileSkillView() {
+  const [selected, setSelected] = useState(0);
+  const cat = nonTechnicalCategories[selected];
+  const Icon = cat.icon;
 
   return (
-    <div className="mt-10 max-w-6xl mx-auto">
-      {/* Category legend */}
-      <div className="flex flex-wrap justify-center gap-3 mb-6">
-        {nonTechnicalCategories.map((cat) => {
-          const Icon = cat.icon;
-          const isActive = hoveredCategory === cat.title;
+    <div className="mt-8">
+      {/* 2x2 category selector */}
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        {nonTechnicalCategories.map((c, i) => {
+          const CatIcon = c.icon;
+          const isActive = selected === i;
           return (
             <button
-              key={cat.title}
-              onMouseEnter={() => setHoveredCategory(cat.title)}
-              onMouseLeave={() => setHoveredCategory(null)}
+              key={c.title}
+              onClick={() => setSelected(i)}
               className={
-                "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border transition duration-300 " +
+                "flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold border transition duration-300 " +
                 (isActive
                   ? "bg-primary text-black border-primary"
-                  : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20")
+                  : "bg-white/5 text-primary border-primary/20 hover:bg-primary/10")
               }
             >
-              <Icon size={11} />
-              {cat.title}
+              <CatIcon size={13} />
+              <span className="truncate">{c.title}</span>
             </button>
           );
         })}
       </div>
+
+      {/* Selected category skills */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={selected}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="bg-white/5 backdrop-blur-lg border border-primary/30
+                     rounded-xl p-5 hover:border-primary transition duration-300"
+        >
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-4 pb-3 border-b border-white/10">
+            <div className="p-2.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
+              <Icon size={18} />
+            </div>
+            <h3 className="text-sm font-bold text-white">{cat.title}</h3>
+            <span className="ml-auto text-xs text-primary/60 bg-primary/10
+                             border border-primary/20 px-2 py-0.5 rounded-full">
+              {cat.skills.length} skills
+            </span>
+          </div>
+
+          {/* Skill pills */}
+          <div className="flex flex-wrap gap-2">
+            {cat.skills.map((skill, j) => (
+              <motion.span
+                key={skill}
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2, delay: j * 0.04 }}
+                className="px-3 py-1.5 text-xs rounded-full bg-primary/10
+                           text-primary border border-primary/20
+                           hover:bg-primary hover:text-black transition duration-200"
+              >
+                {skill}
+              </motion.span>
+            ))}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      <p className="text-center text-gray-600 text-xs mt-4 tracking-wide">
+        {selected + 1} of {nonTechnicalCategories.length} categories
+        · {cat.skills.length} skills
+      </p>
+    </div>
+  );
+}
+
+// ─── Desktop Tag Cloud ────────────────────────────────────────────────────
+function DesktopSkillCloud() {
+  // null = no category locked; string = locked category title
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [hoveredSkill, setHoveredSkill]     = useState<string | null>(null);
+  const [hoveredSkillCat, setHoveredSkillCat] = useState<string | null>(null);
+
+  const handleLegendClick = (title: string) => {
+    setActiveCategory((prev) => (prev === title ? null : title));
+    setHoveredSkill(null);
+    setHoveredSkillCat(null);
+  };
+
+  return (
+    <div className="mt-10 max-w-6xl mx-auto">
+      {/* Category legend — click to activate */}
+      <div className="flex flex-wrap justify-center gap-3 mb-6">
+        {nonTechnicalCategories.map((cat) => {
+          const Icon = cat.icon;
+          const isActive = activeCategory === cat.title;
+          return (
+            <button
+              key={cat.title}
+              onClick={() => handleLegendClick(cat.title)}
+              className={
+                "flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold border transition duration-300 " +
+                (isActive
+                  ? "bg-primary text-black border-primary shadow-lg"
+                  : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20")
+              }
+              style={
+                isActive
+                  ? { boxShadow: "0 0 16px rgba(201,162,39,0.35)" }
+                  : {}
+              }
+            >
+              <Icon size={11} />
+              {cat.title}
+              {isActive && (
+                <span className="ml-1 text-black/60 text-[10px]">✕</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Hint text */}
+      <p className="text-center text-gray-600 text-xs mb-4 tracking-wide">
+        {activeCategory
+          ? `Showing: ${activeCategory} — click the button again to deselect`
+          : "Click a category to highlight its skills · hover any tag for details"}
+      </p>
 
       {/* Cloud canvas */}
       <div
@@ -336,6 +428,7 @@ function SkillCloud() {
         {nonTechnicalCategories.map((cat, i) => {
           const q = QUADRANTS[i];
           const Icon = cat.icon;
+          const isActive = activeCategory === cat.title;
           return (
             <div
               key={cat.title}
@@ -343,8 +436,8 @@ function SkillCloud() {
               style={{
                 left: `${(q.xStart + q.xEnd) / 2}%`,
                 top:  `${(q.yStart + q.yEnd) / 2}%`,
-                transform: "translate(-50%, -50%)",
-                opacity: hoveredCategory === cat.title ? 0.12 : 0.04,
+                transform: "translate(-50%,-50%)",
+                opacity: isActive ? 0.12 : 0.04,
                 transition: "opacity 0.3s",
               }}
             >
@@ -358,12 +451,10 @@ function SkillCloud() {
 
         {/* Quadrant dividers */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Vertical center line */}
           <div
             className="absolute top-[5%] bottom-[5%] w-[1px] bg-white/5"
             style={{ left: "50%" }}
           />
-          {/* Horizontal center line */}
           <div
             className="absolute left-[2%] right-[2%] h-[1px] bg-white/5"
             style={{ top: "51.5%" }}
@@ -372,10 +463,13 @@ function SkillCloud() {
 
         {/* Floating tags */}
         {allTags.map((tag, i) => {
-          const isDimmed =
-            hoveredCategory !== null && hoveredCategory !== tag.category;
-          const isHighlighted =
-            hoveredCategory === tag.category || hoveredSkill === tag.skill;
+          const isCategoryActive = activeCategory !== null;
+          const isInActiveCategory = activeCategory === tag.category;
+          const isHovered = hoveredSkill === tag.skill;
+
+          // Dim logic: if a category is locked and this tag isn't in it → dim
+          const isDimmed = isCategoryActive && !isInActiveCategory;
+          const isHighlighted = isInActiveCategory || isHovered;
 
           return (
             <motion.div
@@ -398,23 +492,23 @@ function SkillCloud() {
                   "transition-all duration-300 whitespace-nowrap " +
                   sizeClasses[tag.size] +
                   (isHighlighted
-                    ? " bg-primary text-black border-primary shadow-lg"
+                    ? " bg-primary text-black border-primary"
                     : isDimmed
-                    ? " bg-white/3 text-gray-600 border-white/5"
+                    ? " bg-white/3 text-gray-700 border-white/5"
                     : " bg-primary/10 text-primary border-primary/25 hover:bg-primary hover:text-black")
                 }
                 style={
                   isHighlighted
-                    ? { boxShadow: "0 0 12px rgba(201,162,39,0.5)" }
+                    ? { boxShadow: "0 0 10px rgba(201,162,39,0.45)" }
                     : {}
                 }
                 onMouseEnter={() => {
-                  setHoveredCategory(tag.category);
                   setHoveredSkill(tag.skill);
+                  setHoveredSkillCat(tag.category);
                 }}
                 onMouseLeave={() => {
-                  setHoveredCategory(null);
                   setHoveredSkill(null);
+                  setHoveredSkillCat(null);
                 }}
               >
                 {tag.skill}
@@ -436,14 +530,14 @@ function SkillCloud() {
                          text-xs font-bold pointer-events-none z-10 whitespace-nowrap"
               style={{ boxShadow: "0 0 16px rgba(201,162,39,0.4)" }}
             >
-              {hoveredSkill} · {hoveredCategory}
+              {hoveredSkill} · {hoveredSkillCat}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
       <p className="text-center text-gray-600 text-xs mt-4 tracking-wide">
-        Hover any skill to highlight its category · {allTags.length} skills across {nonTechnicalCategories.length} domains
+        {allTags.length} skills across {nonTechnicalCategories.length} categories
       </p>
     </div>
   );
@@ -451,9 +545,7 @@ function SkillCloud() {
 
 // ─── Main Export ──────────────────────────────────────────────────────────
 export default function Skills() {
-  const [activeTab, setActiveTab] = useState<"technical" | "nontechnical">(
-    "technical"
-  );
+  const [activeTab, setActiveTab] = useState<"technical" | "nontechnical">("technical");
 
   return (
     <motion.section
@@ -476,7 +568,7 @@ export default function Skills() {
       <p className="text-center text-gray-500 text-sm mt-4 tracking-wide">
         {activeTab === "technical"
           ? "Tap any card to explore skills"
-          : "Hover any skill to highlight its category"}
+          : "Click a category to highlight its skills"}
       </p>
 
       {/* Tab switcher */}
@@ -537,7 +629,15 @@ export default function Skills() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.35 }}
           >
-            <SkillCloud />
+            {/* Mobile view — one category at a time */}
+            <div className="md:hidden">
+              <MobileSkillView />
+            </div>
+
+            {/* Desktop view — tag cloud */}
+            <div className="hidden md:block">
+              <DesktopSkillCloud />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
